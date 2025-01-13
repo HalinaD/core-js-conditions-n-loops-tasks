@@ -21,8 +21,8 @@
  *  0  => true
  *  -5 => false
  */
-function isPositive(/* number */) {
-  throw new Error('Not implemented');
+function isPositive(number) {
+  return number >= 0;
 }
 
 /**
@@ -38,8 +38,14 @@ function isPositive(/* number */) {
  *  -5, 0, 5      => 5
  *  -0.1, 0, 0.2  => 0.2
  */
-function getMaxNumber(/* a, b, c */) {
-  throw new Error('Not implemented');
+function getMaxNumber(a, b, c) {
+  if (a >= b && a >= c) {
+    return a;
+  }
+  if (b >= a && b >= c) {
+    return b;
+  }
+  return c;
 }
 
 /**
@@ -60,8 +66,12 @@ function getMaxNumber(/* a, b, c */) {
  * {x: 1, y: 1}, {x: 2, y: 8} => false
  * {x: 1, y: 1}, {x: 2, y: 8} => false
  */
-function canQueenCaptureKing(/* queen, king */) {
-  throw new Error('Not implemented');
+function canQueenCaptureKing(queen, king) {
+  return (
+    queen.x === king.x ||
+    queen.y === king.y ||
+    Math.abs(queen.x - king.x) === Math.abs(queen.y - king.y)
+  );
 }
 
 /**
@@ -82,8 +92,16 @@ function canQueenCaptureKing(/* queen, king */) {
  *  2, 2, 5   => false
  *  3, 0, 3   => false
  */
-function isIsoscelesTriangle(/* a, b, c */) {
-  throw new Error('Not implemented');
+function isIsoscelesTriangle(a, b, c) {
+  return (
+    a > 0 &&
+    b > 0 &&
+    c > 0 &&
+    a + b > c &&
+    a + c > b &&
+    b + c > a &&
+    (a === b || a === c || b === c)
+  );
 }
 
 /**
@@ -100,8 +118,23 @@ function isIsoscelesTriangle(/* a, b, c */) {
  *  10  => X
  *  26  => XXVI
  */
-function convertToRomanNumerals(/* num */) {
-  throw new Error('Not implemented');
+function convertToRomanNumerals(num) {
+  let result = '';
+  let remaining = num;
+  const values = [
+    [10, 'X'],
+    [9, 'IX'],
+    [5, 'V'],
+    [4, 'IV'],
+    [1, 'I'],
+  ];
+  for (let i = 0; i < values.length; i += 1) {
+    while (remaining >= values[i][0]) {
+      result += values[i][1];
+      remaining -= values[i][0];
+    }
+  }
+  return result;
 }
 
 /**
@@ -135,8 +168,17 @@ function convertNumberToString(/* numberStr */) {
  *  '0123210'   => true
  *  'qweqwe'    => false
  */
-function isPalindrome(/* str */) {
-  throw new Error('Not implemented');
+function isPalindrome(str) {
+  let length = 0;
+  while (str[length] !== undefined) {
+    length += 1;
+  }
+  for (let i = 0; i < length / 2; i += 1) {
+    if (str[i] !== str[length - 1 - i]) {
+      return false;
+    }
+  }
+  return true;
 }
 
 /**
@@ -153,8 +195,13 @@ function isPalindrome(/* str */) {
  *  'qwerty', 'Q'     => -1
  *  'qwerty', 'p'     => -1
  */
-function getIndexOf(/* str, letter */) {
-  throw new Error('Not implemented');
+function getIndexOf(str, letter) {
+  for (let i = 0; str[i] !== undefined; i += 1) {
+    if (str[i] === letter) {
+      return i;
+    }
+  }
+  return -1;
 }
 
 /**
@@ -172,8 +219,17 @@ function getIndexOf(/* str, letter */) {
  *  12345, 0    => false
  *  12345, 6    => false
  */
-function isContainNumber(/* num, digit */) {
-  throw new Error('Not implemented');
+function isContainNumber(num, digit) {
+  let number = num;
+  number = number < 0 ? -number : number;
+  while (number > 0) {
+    const currentDigit = number % 10;
+    if (currentDigit === digit) {
+      return true;
+    }
+    number = Math.floor(number / 10);
+  }
+  return false;
 }
 
 /**
@@ -189,8 +245,20 @@ function isContainNumber(/* num, digit */) {
  *  [2, 3, 9, 5] => 2       => 2 + 3 === 5 then balance element is 9 and its index = 2
  *  [1, 2, 3, 4, 5] => -1   => no balance element
  */
-function getBalanceIndex(/* arr */) {
-  throw new Error('Not implemented');
+function getBalanceIndex(arr) {
+  let totalSum = 0;
+  for (let i = 0; i < arr.length; i += 1) {
+    totalSum += arr[i];
+  }
+  let leftSum = 0;
+  for (let i = 0; i < arr.length; i += 1) {
+    totalSum -= arr[i];
+    if (leftSum === totalSum) {
+      return i;
+    }
+    leftSum += arr[i];
+  }
+  return -1;
 }
 
 /**
@@ -272,8 +340,47 @@ function sortByAsc(/* arr */) {
  *  '012345', 3 => '024135' => '043215' => '031425'
  *  'qwerty', 3 => 'qetwry' => 'qtrewy' => 'qrwtey'
  */
-function shuffleChar(/* str, iterations */) {
-  throw new Error('Not implemented');
+function shuffleChar(str, iterations) {
+  const { length } = str;
+  if (length <= 1) return str;
+
+  let currentStr = str;
+  const seen = new Map();
+  let cycleLength = 0;
+
+  while (!seen.has(currentStr)) {
+    seen.set(currentStr, cycleLength);
+    cycleLength += 1;
+
+    let even = '';
+    let odd = '';
+    for (let i = 0; i < length; i += 1) {
+      if (i % 2 === 0) {
+        even += currentStr[i];
+      } else {
+        odd += currentStr[i];
+      }
+    }
+    currentStr = even + odd;
+  }
+
+  const effectiveIterations = iterations % cycleLength;
+  currentStr = str;
+
+  for (let iter = 0; iter < effectiveIterations; iter += 1) {
+    let even = '';
+    let odd = '';
+    for (let i = 0; i < length; i += 1) {
+      if (i % 2 === 0) {
+        even += currentStr[i];
+      } else {
+        odd += currentStr[i];
+      }
+    }
+    currentStr = even + odd;
+  }
+
+  return currentStr;
 }
 
 /**
@@ -293,8 +400,47 @@ function shuffleChar(/* str, iterations */) {
  * @param {number} number The source number
  * @returns {number} The nearest larger number, or original number if none exists.
  */
-function getNearestBigger(/* number */) {
-  throw new Error('Not implemented');
+function getNearestBigger(number) {
+  const digits = [];
+  let n = number;
+
+  while (n > 0) {
+    digits.unshift(n % 10);
+    n = Math.floor(n / 10);
+  }
+
+  const { length } = digits;
+  let i = length - 2;
+
+  while (i >= 0 && digits[i] >= digits[i + 1]) {
+    i -= 1;
+  }
+
+  if (i < 0) {
+    return number;
+  }
+
+  let j = length - 1;
+  while (digits[j] <= digits[i]) {
+    j -= 1;
+  }
+
+  [digits[i], digits[j]] = [digits[j], digits[i]];
+
+  let left = i + 1;
+  let right = length - 1;
+  while (left < right) {
+    [digits[left], digits[right]] = [digits[right], digits[left]];
+    left += 1;
+    right -= 1;
+  }
+
+  let result = 0;
+  for (let k = 0; k < length; k += 1) {
+    result = result * 10 + digits[k];
+  }
+
+  return result;
 }
 
 module.exports = {
